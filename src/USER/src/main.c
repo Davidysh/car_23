@@ -42,7 +42,7 @@ int main() {
 
         camera_check();
         if(display_status)display();
-        change_flag();
+        // change_flag();
         factor = cal_factor();
         car_move(factor);
         sample();

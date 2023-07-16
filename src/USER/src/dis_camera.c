@@ -16,7 +16,7 @@ void change_flag(){
 }
 
 void display() {
-    if(camera_stauts == ok){ //�ж��Ƿ���ɲ���
+    if(camera_stauts == ok){ 
         ips114_show_gray_image(0, 0,
             mt9v03x_image_dvp,
             c_w, c_h,
@@ -90,7 +90,29 @@ int8_t cal_factor(){
     cal_area(area);
     int diff = area[0] - area[1];
 
-    ans = diff / 10;
+    ans = diff / 100;
 
     return ans;
+}
+
+void Bin_Image_Filter (int** Bin_Image){
+    int16_t nr; //行
+    int16_t nc; //列
+
+    for (nr = 1; nr < c_w - 1; ++nr)
+    {
+        for (nc = 1; nc < c_h - 1; ++nc)
+        {
+            if ((Bin_Image[nr][nc] == 0)
+                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] > 2))
+            {
+                Bin_Image[nr][nc] = 1;
+            }
+            else if ((Bin_Image[nr][nc] == 1)
+                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] < 2))
+            {
+                Bin_Image[nr][nc] = 0;
+            }
+        }
+    }
 }

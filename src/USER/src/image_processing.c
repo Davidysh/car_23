@@ -7,7 +7,8 @@
 #include "HF_Double_DC_Motor.h"
 #include <stdint.h>
 
-
+#define row = 120 
+#define line = 70
 uint8_t flag_show_status = 0;
 #define  _avg_fre 12
 static uint8_t _threshold_avg[_avg_fre] = {0};
@@ -233,33 +234,74 @@ uint8_t get_threshold() {//灰度值图像直方图
 * 函数名: Get_Use_Image
 * 功能: 获取比赛所用的图像大小即对图像进行分割选取
 * 输入: void
-* 输出: void
+* 输出: (Bin_Image[row][line])分割后的二维数组
 * 用法: Get_Use_Image();
 * 修改记录:
 ===================================================================*/
-void Get_Use_Image(void)
-{
+int** Get_Use_Image(void){
     short i = 0, j = 0, row = 0, line = 0;
-
-    for (i = 0; i < c_h; i += 2)          //神眼高 120 / 2  = 60，
-    // for (i = 0; i < IMAGEH; i += 3)       //OV7725高 240 / 3  = 80，
+    int** Image;
+    for (i = 0; i < d_h; i += 2)          
+    // for (i = 0; i < IMAGEH; i += 3)       
     {
-        for (j = 0; j <= c_w; j += 2)     //神眼宽188 / 2  = 94，
-        // for (j = 0; j <= IMAGEW; j += 3)  //OV7725宽320 / 3  = 106，
+        for (j = 0; j <= d_w; j += 2)     
+        // for (j = 0; j <= IMAGEW; j += 3)  
         {
-            Image_Use[row][line] = Image_Data[i][j];
+            Image[row][line] = mt9v03x_image_dvp[i][j];//mt9v03x_image_dvp是灰度值图像
             line++;
         }
         line = 0;
         row++;
     }
+    return Image;
+}
+/*==================================================================
+* 函数名: Bin_Image_Filter
+* 功能: 对二值化图像进行降噪
+* 输入: void
+* 输出: void
+* 用法: Bin_Image_Filter();
+* 修改记录:
+===================================================================*/
+int** Get_Bin_Image(int** Image ,int threshold){
+    int** Bin_Image;
+    for(int i = 0; i < Image.size();++i){
+        for(int j = 0;j < Image[i].size();++j){
+            if(Image[i][j] < threshold)
+                Bin_Image[i][j] = 0;
+            else
+                Bin_Image[i][j] = 1;
+        }
+    }
+    return Bin_Image;
 }
 
 /*==================================================================
-* 函数名: Get_Use_Image
-* 功能: 获取比赛所用的图像大小
+* 函数名: Bin_Image_Filter
+* 功能: 对二值化图像进行降噪
 * 输入: void
 * 输出: void
-* 用法: Get_Use_Image();
+* 用法: Bin_Image_Filter();
 * 修改记录:
 ===================================================================*/
+void Bin_Image_Filter (int Bin_Image[row][line]){
+    uint16 nr; //行
+    uint16 nc; //列
+
+    for (nr = 1; nr < row - 1; nr++)
+    {
+        for (nc = 1; nc < line - 1; nc = nc + 1)
+        {
+            if ((Bin_Image[nr][nc] == 0)
+                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] > 2))
+            {
+                Bin_Image[nr][nc] = 1;
+            }
+            else if ((Bin_Image[nr][nc] == 1)
+                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] < 2))
+            {
+                Bin_Image[nr][nc] = 0;
+            }
+        }
+    }
+}

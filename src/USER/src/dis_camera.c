@@ -94,25 +94,3 @@ int8_t cal_factor(){
 
     return ans;
 }
-
-void Bin_Image_Filter (int** Bin_Image){
-    int16_t nr; //行
-    int16_t nc; //列
-
-    for (nr = 1; nr < c_w - 1; ++nr)
-    {
-        for (nc = 1; nc < c_h - 1; ++nc)
-        {
-            if ((Bin_Image[nr][nc] == 0)
-                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] > 2))
-            {
-                Bin_Image[nr][nc] = 1;
-            }
-            else if ((Bin_Image[nr][nc] == 1)
-                    && (Bin_Image[nr - 1][nc] + Bin_Image[nr + 1][nc] + Bin_Image[nr][nc + 1] + Bin_Image[nr][nc - 1] < 2))
-            {
-                Bin_Image[nr][nc] = 0;
-            }
-        }
-    }
-}

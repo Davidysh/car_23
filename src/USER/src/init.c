@@ -9,7 +9,11 @@ void init() {
 
     ips114_init();     
     show_message("car_23-Maye", 0);
+<<<<<<< HEAD
     show_message("version:0.2.1  f=20 d=0.3", 0);
+=======
+    show_message("version:0.2.0  f=30", 0);
+>>>>>>> ab14a82a7300c3d9e630c1c1a7c7952607fb54b8
     show_message("init_begin...", 0);
     Delay_Ms(2000);
 

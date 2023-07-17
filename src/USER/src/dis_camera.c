@@ -16,7 +16,11 @@ void change_flag(){
 }
 
 void display() {
+<<<<<<< HEAD
     if(camera_stauts == ok){ 
+=======
+    if(camera_stauts == ok){ //�ж��Ƿ���ɲ���
+>>>>>>> ab14a82a7300c3d9e630c1c1a7c7952607fb54b8
         ips114_show_gray_image(0, 0,
             mt9v03x_image_dvp,
             c_w, c_h,
